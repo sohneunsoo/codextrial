@@ -1,16 +1,10 @@
 import './styles.css';
-
-declare global {
-  interface Window {
-    L: any;
-  }
-}
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 type LatLng = { lat: number; lng: number };
 type TravelMode = 'walk' | 'run' | 'bike' | 'drive' | 'tour';
 type Priority = 'shape' | 'scenic' | 'parks' | 'waterfront' | 'cafes' | 'lowElevation' | 'safe';
-
-const L = window.L;
 
 const cityPresets: Record<string, { label: string; center: LatLng; zoom: number }> = {
   seoul: { label: 'Seoul', center: { lat: 37.5665, lng: 126.978 }, zoom: 13 },
@@ -69,11 +63,12 @@ const clearBtn = document.querySelector<HTMLButtonElement>('#clearBtn')!;
 const mapHint = document.querySelector<HTMLDivElement>('#mapHint')!;
 const notes = document.querySelector<HTMLUListElement>('#routeNotes')!;
 const waypointList = document.querySelector<HTMLOListElement>('#waypointList')!;
+const mapContainer = map.getContainer();
+let activePointerId: number | null = null;
 
 citySelect.addEventListener('change', () => {
   state.currentCity = citySelect.value;
-  const city = cityPresets[state.currentCity];
-  map.setView(city.center, city.zoom);
+  map.setView(cityPresets[state.currentCity].center, cityPresets[state.currentCity].zoom);
 });
 
 prioritySelect.addEventListener('change', () => {
@@ -92,7 +87,19 @@ drawBtn.addEventListener('click', () => {
   state.drawing = !state.drawing;
   drawBtn.textContent = state.drawing ? 'Stop drawing' : 'Draw route';
   drawBtn.classList.toggle('recording', state.drawing);
-  map.dragging[state.drawing ? 'disable' : 'enable']();
+  mapContainer.classList.toggle('drawing-mode', state.drawing);
+  if (state.drawing) {
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.doubleClickZoom.disable();
+  } else {
+    activePointerId = null;
+    map.dragging.enable();
+    map.touchZoom.enable();
+    map.scrollWheelZoom.enable();
+    map.doubleClickZoom.enable();
+  }
   mapHint.textContent = state.drawing ? 'Drag across the map to sketch your route.' : 'Sketch captured. Generate when ready.';
 });
 
@@ -105,27 +112,43 @@ document.querySelector<HTMLButtonElement>('#saveBtn')!.addEventListener('click',
   setNotes(['Draft saved locally in this browser.']);
 });
 
-map.on('mousedown', (event: any) => {
-  if (!state.drawing) return;
-  state.rawPoints = [{ lat: event.latlng.lat, lng: event.latlng.lng }];
-  sketchLayer.setLatLngs(state.rawPoints);
-});
+mapContainer.addEventListener('pointerdown', beginSketch, { capture: true });
+document.addEventListener('pointermove', trackSketch, { capture: true });
+document.addEventListener('pointerup', finishSketch, { capture: true });
+document.addEventListener('pointercancel', finishSketch, { capture: true });
 
-map.on('mousemove', (event: any) => {
-  if (!state.drawing || state.rawPoints.length === 0) return;
-  const next = { lat: event.latlng.lat, lng: event.latlng.lng };
+function beginSketch(event: PointerEvent) {
+  if (!state.drawing || event.button !== 0) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  activePointerId = event.pointerId;
+  const latlng = map.mouseEventToLatLng(event);
+  state.rawPoints = [{ lat: latlng.lat, lng: latlng.lng }];
+  sketchLayer.setLatLngs(state.rawPoints);
+}
+
+function trackSketch(event: PointerEvent) {
+  if (!state.drawing || activePointerId !== event.pointerId || state.rawPoints.length === 0) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  const latlng = map.mouseEventToLatLng(event);
+  const next = { lat: latlng.lat, lng: latlng.lng };
   const previous = state.rawPoints[state.rawPoints.length - 1];
   if (haversine(previous, next) > 8) {
     state.rawPoints.push(next);
     sketchLayer.setLatLngs(state.rawPoints);
   }
-});
+}
 
-map.on('mouseup', () => {
+function finishSketch(event: PointerEvent) {
+  if (activePointerId !== event.pointerId) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  activePointerId = null;
   if (!state.drawing || state.rawPoints.length < 2) return;
   state.sampledPoints = selectWaypoints(state.rawPoints, waypointBudgetForMode(state.mode));
   renderWaypoints();
-});
+}
 
 async function generateRoute() {
   if (state.rawPoints.length < 2) {
