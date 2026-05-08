@@ -2,7 +2,7 @@
   "name": "focus-aligned",
   "version": "0.1.0",
   "description": "Local-first Windows desktop MVP for noticing focus drift from screen activity.",
-  "main": "dist/main/index.js",
+  "main": "out/main/index.js",
   "private": true,
   "type": "module",
   "scripts": {
