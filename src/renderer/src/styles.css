@@ -1,0 +1,286 @@
+:root {
+  color: #26231d;
+  background: #f7f5ef;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 960px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  align-items: center;
+  border: 1px solid #c9c3b6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #26231d;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+button:hover {
+  border-color: #827969;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 28px;
+}
+
+.app-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.app-header h1,
+.dashboard-top h2 {
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 0 0 6px;
+}
+
+.app-header p,
+.dashboard-top p,
+.summary-panel p,
+.timeline p {
+  color: #6a6256;
+  margin: 0;
+}
+
+.privacy-pill,
+.state-badge {
+  align-items: center;
+  border: 1px solid #d7d1c3;
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 8px;
+  padding: 9px 12px;
+}
+
+.setup-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.setup-form,
+.summary-panel,
+.dashboard-top,
+.activity-panel,
+.timeline {
+  background: #fffdfa;
+  border: 1px solid #dfd8ca;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.setup-form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  color: #514a40;
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid #c9c3b6;
+  border-radius: 8px;
+  color: #26231d;
+  min-height: 42px;
+  padding: 10px 12px;
+}
+
+textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.checkbox-row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  min-height: 42px;
+}
+
+.checkbox-row input {
+  min-height: auto;
+}
+
+.primary-button {
+  background: #234f44;
+  border-color: #234f44;
+  color: #fff;
+  justify-content: center;
+  min-height: 46px;
+}
+
+.dashboard {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-top {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.eyebrow {
+  color: #857b6e;
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.state-badge {
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.state-badge.aligned,
+.dot.aligned {
+  background: #dbeadf;
+  border-color: #7da888;
+}
+
+.state-badge.weakly_aligned,
+.dot.weakly_aligned {
+  background: #e8e0c5;
+  border-color: #b49b49;
+}
+
+.state-badge.drift,
+.dot.drift {
+  background: #f1d7d1;
+  border-color: #c86d5c;
+}
+
+.state-badge.unknown,
+.dot.unknown {
+  background: #e7e4de;
+  border-color: #9d9589;
+}
+
+.control-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric {
+  background: #fffdfa;
+  border: 1px solid #dfd8ca;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  padding: 16px;
+}
+
+.metric span {
+  color: #6a6256;
+}
+
+.metric strong {
+  font-size: 24px;
+}
+
+.activity-panel {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.activity-panel h3,
+.timeline h3,
+.summary-panel h2 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.activity-panel p {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.timeline ol {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.timeline li {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 90px 12px 130px minmax(0, 1fr) 48px;
+  min-height: 34px;
+}
+
+.timeline time,
+.timeline small {
+  color: #746b60;
+}
+
+.dot {
+  border: 1px solid;
+  border-radius: 999px;
+  height: 12px;
+  width: 12px;
+}
+
+.summary-list {
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 1020px) {
+  .setup-grid,
+  .metric-grid,
+  .activity-panel {
+    grid-template-columns: 1fr;
+  }
+}
